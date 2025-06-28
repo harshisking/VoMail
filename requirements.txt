@@ -1,0 +1,6 @@
+speechrecognition
+pyaudio
+sqlite3
+ollama
+smtplib
+python-dotenv

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+env/
+ENV/
+.env
+.env.test
+*.db
+.vscode/
+README.local.md
