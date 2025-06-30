@@ -41,9 +41,9 @@ def add_contact(alias: str, email: str):
 def get_contact(alias: str):
     while True:
         try:
-            c.execute('SELECT email FROM contacts WHERE alias=:alias', {'alias':alias})
+            c.execute('SELECT * FROM contacts WHERE alias=:alias', {'alias':alias})
             result = c.fetchone()
-            return result[0]
+            return result
         except :
             print(f"No Contact Found with alias {alias}")
             break
