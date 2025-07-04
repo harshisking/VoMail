@@ -10,6 +10,7 @@ def get_command():
     try:
         # source as microphone
         with sr.Microphone() as source:
+            os.system("clear" if os.name == 'posix' else "cls")
             print("Listening.....")
             recognizer.adjust_for_ambient_noise(source, duration=1) # reducing ambient noises
 
