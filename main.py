@@ -1,5 +1,5 @@
 import core.contacts as conts
 import core.speech as sp
-import core.generate as gen
+import core.ai as gen
 
 def main():
