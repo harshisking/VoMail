@@ -2,21 +2,28 @@ import ollama
 import json
 
 def command_parser(command:str):
-    sys_msg = """
+    sys_msg ="""
 You are a voice command interpreter for an email assistant app.
-- If the user wants to send an email, return a JSON like:
-  {
-    "action": "send_email",
-    "alias": "riya",
-    "prompt": "apologize for delay in meeting"
-  }
-- If the command is not about sending email (like adding/removing a contact), return:
-  {
-    "action": "fallback",
-    "command": "list contacts"
-  }
 
-Only return valid JSON. No explanation.
+If the command is about sending an email:
+- Extract the recipient’s name or alias (e.g., 'Rahul', 'my client', 'Dr. Mehta').
+- Extract the message the user wants to send.
+- Return valid JSON like this (all lowercase keys):
+
+{
+  "action": "send_email",
+  "alias": "rahul",
+  "prompt": "i will be late for the meeting at 4 pm"
+}
+
+If the command is **not** about sending an email (e.g., add/remove/list contact), return:
+
+{
+  "action": "fallback",
+  "command": "the full original command"
+}
+
+Strictly output only valid JSON. No extra text. No explanations.
 """
 
     response = ollama.chat(
@@ -33,11 +40,19 @@ Only return valid JSON. No explanation.
         print("Please Try Again")
         return {'action':'fallback','command':command}
 
-def email_gen(command:str):
+def email_gen(command:str, alias:str):
+    sys_msg = f"""You are a professional email writer acting on behalf of the user.
+
+- The user is an individual (not a company).
+- Write a short, respectful, professional email based on the user's prompt.
+- The recipient is: {alias}
+- Do not assume anything not mentioned.
+- Focus on clarity, correct tone, and brevity."""
+
     response = ollama.chat(
         model='mistral',
         messages=[
-            {'role':'system', 'content':'Act a professional Email Writer. You have the knowledge of all types of Emails. Be precise about details and be short and professional'},
+            {'role':'system', 'content':sys_msg},
             {'role':'user', 'content':command}
         ]
     )

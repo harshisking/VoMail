@@ -10,7 +10,7 @@ if db_path and not os.path.exists(db_path):
 
 conn = sqlite3.connect(DB_FILE)
 c = conn.cursor()
-conn = sqlite3.connect(":memory:")
+conn = sqlite3.connect(DB_FILE)
 c = conn.cursor()
 
 #the functions start
@@ -89,3 +89,11 @@ def list_contacts():
         return c.fetchall()
     except:
         print("First add some contacts")
+
+def main():
+    add_contact('vomail', 'example@example.com')
+
+if __name__=='__main__':
+    main()
+
+__all__ = ['add_contact','create_table','list_contacts','remove_contact','update_contact','get_contact']
