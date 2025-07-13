@@ -6,13 +6,13 @@ load_dotenv()
 
 
 
-def sender(to_email, body):
+def sender(to_email, body, subject):
     #loading the env
     EMAIL= os.getenv("EMAIL_ADDRESS")
     PASSWORD= os.getenv("EMAIL_PASSWORD")
     
     msg = MIMEText(body,"plain")
-    msg["Subject"] = 'Test Message from VoMail Sender'
+    msg["Subject"] = subject
     msg["From"]=EMAIL
     msg["To"]=to_email
 

@@ -1,5 +1,10 @@
 import ollama
 import json
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+username = os.getenv("USERNAME")
 
 def command_parser(command:str):
     sys_msg ="""
@@ -16,11 +21,12 @@ If the command is about sending an email:
   "prompt": "i will be late for the meeting at 4 pm"
 }
 
-If the command is **not** about sending an email (e.g., add/remove/list contact), return:
+If the command is **not** about sending an email (e.g., remove contact rahul), the list contact command and add contact command will return with "alias" as "none", return:
 
 {
   "action": "fallback",
-  "command": "the full original command"
+  "alias": "rahul"
+  "command": "remove_contact"
 }
 
 Strictly output only valid JSON. No extra text. No explanations.
@@ -40,20 +46,21 @@ Strictly output only valid JSON. No extra text. No explanations.
         print("Please Try Again")
         return {'action':'fallback','command':command}
 
-def email_gen(command:str, alias:str):
+def email_gen(prompt:str, alias:str):
     sys_msg = f"""You are a professional email writer acting on behalf of the user.
 
 - The user is an individual (not a company).
 - Write a short, respectful, professional email based on the user's prompt.
 - The recipient is: {alias}
 - Do not assume anything not mentioned.
-- Focus on clarity, correct tone, and brevity."""
+- Focus on clarity, correct tone, and brevity.
+- The users name is {username}"""
 
     response = ollama.chat(
         model='mistral',
         messages=[
             {'role':'system', 'content':sys_msg},
-            {'role':'user', 'content':command}
+            {'role':'user', 'content':prompt}
         ]
     )
     email_txt = response['message']['content']
