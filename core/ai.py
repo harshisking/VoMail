@@ -7,13 +7,14 @@ load_dotenv()
 username = os.getenv("USERNAME")
 
 def command_parser(command:str):
+    print("Analyzing the command")
     sys_msg ="""
 You are a voice command interpreter for an email assistant app.
 
-If the command is about sending an email:
-- Extract the recipient’s name or alias (e.g., 'Rahul', 'my client', 'Dr. Mehta').
-- Extract the message the user wants to send.
-- Return valid JSON like this (all lowercase keys):
+If the user's command is about sending an email:
+- Extract the recipient's alias or name (e.g., 'rahul', 'my client', 'dr. mehta').
+- Extract the actual message they want to send.
+- Respond with strictly valid JSON in this format (all lowercase keys):
 
 {
   "action": "send_email",
@@ -21,16 +22,20 @@ If the command is about sending an email:
   "prompt": "i will be late for the meeting at 4 pm"
 }
 
-If the command is **not** about sending an email (e.g., remove contact rahul), the list contact command and add contact command will return with "alias" as "none", return:
+If the command is NOT about sending email (like adding, listing, deleting contacts, or getting a contact):
+- Extract the alias (if available).
+- Determine the intent from the phrase (e.g., add/remove/list/get contact).
+- Respond with:
 
 {
   "action": "fallback",
-  "alias": "rahul"
+  "alias": "rahul",
   "command": "remove_contact"
 }
 
-Strictly output only valid JSON. No extra text. No explanations.
+Only respond with valid JSON. Do not explain anything. Do not include extra text.
 """
+
 
     response = ollama.chat(
         model='mistral',
@@ -47,6 +52,7 @@ Strictly output only valid JSON. No extra text. No explanations.
         return {'action':'fallback','command':command}
 
 def email_gen(prompt:str, alias:str):
+    print("Generating Email")
     sys_msg = f"""You are a professional email writer acting on behalf of the user.
 
 - The user is an individual (not a company).
@@ -69,7 +75,8 @@ def email_gen(prompt:str, alias:str):
 
 def main():
     prompt = input("INPUT: ")
-    print(command_parser(prompt))
+    json_data = command_parser(prompt)
+    print(json_data)
 
 
 if __name__=="__main__":

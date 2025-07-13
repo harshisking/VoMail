@@ -1,5 +1,6 @@
 import smtplib
 import os
+import sys
 from dotenv import load_dotenv
 from email.mime.text import MIMEText
 load_dotenv()
@@ -24,7 +25,9 @@ def sender(to_email, body, subject):
         server.login(EMAIL,PASSWORD)
         server.send_message(msg)
         server.quit()
-        print("Email Sent")
+        print("Email Sent Successfully!")
+    except KeyboardInterrupt:
+        sys.exit("VoMail Interrupted by User\n")
     except Exception as e:
         print("ERROR:",e)
 
